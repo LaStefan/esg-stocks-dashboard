@@ -1,0 +1,54 @@
+version: '1.0.0'
+services:
+    flask-app:
+        build:
+            context: .
+            dockerfile: dashboard/Dockerfile_dashboard  # Specify the unique Dockerfile name
+        ports:
+            - 8080:5000
+        volumes:
+            - ./dashboard:/app
+            - ./data:/data
+        environment:
+            - NAME=Flask-App
+            - PYTHONPATH=/app
+        working_dir: /app
+        depends_on:
+            db_dashboard:
+                condition: service_healthy
+    
+    jupyter:
+        build:
+            context: .
+            dockerfile: notebook/Dockerfile_notebook
+        ports:
+            - 8888:8888
+        volumes:
+            - ./notebook:/notebook
+            - ./data:/data
+        environment:
+            - JUPYTER_ENABLE_LAB=yes
+            - NB_USER=infomdss
+            - CHOWN_HOME=yes
+        working_dir: /notebook
+    
+    db_dashboard:
+        image: postgres
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=student
+            - POSTGRES_PASSWORD=infomdss
+            - POSTGRES_DB=dashboard
+        volumes:
+            - db_dashboard-data:/var/lib/postgresql/data/
+        container_name: db_dashboard
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+            interval: 3s
+            timeout: 60s
+            retries: 10
+            start_period: 80s
+
+volumes:
+    db_dashboard-data:
