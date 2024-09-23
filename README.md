@@ -5,9 +5,9 @@ This is a project related to Data Science & Society course. It focuses on the an
 
 Authors of this project are:
 
-Stefan Lazarevic - 7818157__
-Jort van Meenen - 3639369__
-Jeroen Goossens - 6487882__
+Stefan Lazarevic - 7818157
+Jort van Meenen - 3639369
+Jeroen Goossens - 6487882
 
 ## License
 
