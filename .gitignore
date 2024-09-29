@@ -32,6 +32,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+__pycache__
+*.pyc
 
 # For Mac users
 .DS_Store

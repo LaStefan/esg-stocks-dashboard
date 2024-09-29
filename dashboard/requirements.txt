@@ -1,5 +1,7 @@
 # In order to install these dependencies run: pip or pip3 install -r requirements.txt
 
+Flask
+plotly
 numpy
 pandas
 scipy
@@ -10,12 +12,10 @@ sqlalchemy
 requests
 scikit-learn
 pulp
+python-gnupg
+psycopg2-binary 
+country_converter
+streamlit
 
 # auto-sklearn This package is more challenging to install and has issues
 
-# These imports are coming from template project (some of them will be relevant)
-# Flask
-# plotly
-# psycopg2-binary 
-# country_converter
-# python-gnupg
