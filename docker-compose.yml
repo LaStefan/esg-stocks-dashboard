@@ -1,6 +1,7 @@
-version: '1.0.0'
+version: '1.5'
+
 services:
-    flask-app:
+    esg-stocks-app:
         build:
             context: .
             dockerfile: dashboard/Dockerfile_dashboard  # Specify the unique Dockerfile name
@@ -10,11 +11,12 @@ services:
             - ./dashboard:/app
             - ./data:/data
         environment:
-            - NAME=Flask-App
-            - PYTHONPATH=/app
+          FLASK_APP: app.py
+          FLASK_ENV: development  # This enables debug mode 
+            # - PYTHONPATH=/app
         working_dir: /app
         depends_on:
-            db_dashboard:
+            esg-stocks-db:
                 condition: service_healthy
     
     jupyter:
@@ -28,21 +30,21 @@ services:
             - ./data:/data
         environment:
             - JUPYTER_ENABLE_LAB=yes
-            - NB_USER=infomdss
+            - NB_USER=team13
             - CHOWN_HOME=yes
         working_dir: /notebook
     
-    db_dashboard:
-        image: postgres
+    esg-stocks-db:
+        image: postgres:16
         ports:
             - 5432:5432
         environment:
-            - POSTGRES_USER=student
-            - POSTGRES_PASSWORD=infomdss
-            - POSTGRES_DB=dashboard
+            - POSTGRES_USER=team13
+            - POSTGRES_PASSWORD=team13
+            - POSTGRES_DB=esg-stocks-database
         volumes:
-            - db_dashboard-data:/var/lib/postgresql/data/
-        container_name: db_dashboard
+            - esg-stocks-db-data:/var/lib/postgresql/data/
+        container_name: esg-stocks-db
         healthcheck:
             test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
             interval: 3s
@@ -51,4 +53,4 @@ services:
             start_period: 80s
 
 volumes:
-    db_dashboard-data:
+    esg-stocks-db-data:
