@@ -5,7 +5,7 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
 
 ## Getting started
 
-### Instalation
+### Installation
 
 1. **Clone the Repository:**
    ```bash
