@@ -17,7 +17,7 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
     docker compose up -d
 
 3. **Access the Application:**
-    - Flask App: Visit http://localhost:8080 in your browser.
+    - Streamlit App: Visit http://localhost:8501 in your browser.
     - Jupyter Notebook: Visit http://127.0.0.1:8888/ and follow the instructions in the terminal to access your notebooks.
 
 
