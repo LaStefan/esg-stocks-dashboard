@@ -1,6 +1,5 @@
 # In order to install these dependencies run: pip or pip3 install -r requirements.txt
 
-Flask
 plotly
 numpy
 pandas
