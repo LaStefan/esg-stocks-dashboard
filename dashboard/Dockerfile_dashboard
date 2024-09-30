@@ -8,15 +8,12 @@ WORKDIR /app
 COPY ./dashboard /app
 
 # Install any needed packages specified in requirements.txt
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Make port 8501 available to the world outside this container
+EXPOSE 8501
 
-# Define environment variable
-ENV FLASK_APP=app.py
-# Automatically enables debug mode
-ENV FLASK_ENV=development  
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-# Run the Flask app
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000", "--debug"]
+# Run the Streamlit app
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
