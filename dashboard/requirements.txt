@@ -15,6 +15,7 @@ python-gnupg
 psycopg2-binary 
 country_converter
 streamlit
-
+python-dotenv
+fmpsdk
 # auto-sklearn This package is more challenging to install and has issues
 
