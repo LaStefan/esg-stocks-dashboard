@@ -32,7 +32,7 @@ except Exception as e:
 finnhub_client = finnhub.Client(FINNHUB_API_KEY)
 
 # ESG data
-esg_dataframe = pd.read_csv('../data/esg-ratings.csv')
+esg_dataframe = pd.read_csv('../data/raw/esg-ratings.csv')
 
 # Utils (can be moved to utils folder later)
 # Gets the raw esg row from the csv file, and returns it as a dictionary
@@ -138,9 +138,9 @@ def extract_data():
 async def main():
   print("Extracting data...")
   stocks_info_list, pricing_history_list, esg_history_list = extract_data()
-  generate_csv(stocks_info_list, '../data/stock.csv')
-  generate_csv(pricing_history_list, '../data/pricing_history.csv', index=True)
-  generate_csv(esg_history_list, '../data/esg_history.csv', index=True)
+  generate_csv(stocks_info_list, '../data/transformed/stock.csv')
+  generate_csv(pricing_history_list, '../data/transformed/pricing_history.csv', index=True)
+  generate_csv(esg_history_list, '../data/transformed/esg_history.csv', index=True)
   print("Done :)")
 
 if __name__ == '__main__':
