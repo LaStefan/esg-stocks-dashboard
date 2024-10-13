@@ -1,63 +1,80 @@
 import streamlit as st
-import json
-import requests
 import pandas as pd
-import numpy as np
+from sqlalchemy import create_engine
+import plotly.graph_objects as go
 
 # Set the page configuration
-st.set_page_config(page_title="ESG Stocks Dashboard", page_icon="📈")
+st.set_page_config(page_title="ESG Dashboard", page_icon=":bar_chart:", layout='wide', initial_sidebar_state='expanded')
 
 # Streamlit Title
-st.title("Stock Prices & ESG Score Analysis")
+st.title("Sustainable Investing With ESG Scores")
 
-# Load the API key from the config file
-with open('config.json', 'r') as config_file:
-    config = json.load(config_file)
+pg = st.navigation([st.Page("app.py", title="Home", icon="🏡"), st.Page("esg.py", title="ESG Scores", icon="📊")])
+# pg.run()
 
-# Fetch API key
-api_key = config.get('ALPHAVANTAGE_API_KEY')
+# Create a SQLAlchemy engine to connect to the PostgreSQL database
+engine = create_engine("postgresql://team13:team13@esg-stocks-db:5432/esg-stocks-database")
 
-# Define URL for API request
-url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey={api_key}'
+# Join all 3 tables and select certain columns
+query = """
+SELECT 
+st.ticker_symbol, 
+st.name, 
+CAST(MAX(esg.total_score) AS numeric) AS max_esg_score,
+CAST(MAX(esg.environment_score) AS numeric) AS max_env_score,
+CAST(MAX(esg.social_score) AS numeric) AS max_social_score,
+CAST(MAX(esg.governance_score) AS numeric) AS max_governance_score
+FROM stock AS st
+INNER JOIN esg_history AS esg ON st.ticker_symbol = esg.ticker_symbol
+INNER JOIN pricing_history AS ph ON ph.ticker_symbol = st.ticker_symbol
+GROUP BY st.ticker_symbol, st.name
+"""
 
-# Make the API request
-r = requests.get(url)
-data = r.json()
+# Use pandas to read the data
+df = pd.read_sql_query(query, engine)
 
-# Access the time series data
-daily_data = data.get('Time Series (Daily)', {})
+# Sort the DataFrame
+df_sorted = df.sort_values(by='max_esg_score', ascending=False)
 
-# Convert to DataFrame
-df = pd.DataFrame.from_dict(daily_data, orient='index')
+# Display data table
+st.dataframe(df_sorted)
 
-# Convert index to datetime
-df.index = pd.to_datetime(df.index)
+# Create a bar chart using Plotly
+fig = go.Figure()
 
-# Optionally, sort the index
-df.sort_index(inplace=True)
+fig.add_trace(go.Bar(
+    x=df['name'],
+    y=df['max_env_score'],
+    name='Environment',
+    marker_color='lightblue'
+))
 
-# Add the symbol as a column at the beginning
-df.insert(0,'Company', 'IBM')
+fig.add_trace(go.Bar(
+    x=df['name'],
+    y=df['max_social_score'],
+    name='Social',
+    marker_color='lightgreen'
+))
 
-# Display the DataFrame in Streamlit
-st.header("IBM Stock Prices")
-if st.checkbox('Show stocks table'):
-    st.dataframe(df)
+fig.add_trace(go.Bar(
+    x=df['name'],
+    y=df['max_governance_score'],
+    name='Governance',
+    marker_color='lightpink'
+))
 
-if st.checkbox('Show chart'):
-# Line chart plot
-    chart_data = pd.DataFrame(
-     np.random.randn(20, 3),
-     columns=['a', 'b', 'c'])
-    st.line_chart(chart_data)
+# Update layout
+fig.update_layout(
+    barmode='group',
+    xaxis_tickangle=-45,
+    xaxis_title='Stocks',
+    yaxis_title='ESG Scores',
+    title='ESG Scores by Category',
+    legend_title_text='Categories',
+    width=1200,  # Set width
+    height=700,  # Set height
+    legend=dict(yanchor="top", y=1.15, xanchor="left", x=1.05)
+)
 
-# Map plot
-map_data = pd.DataFrame(
-    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-    columns=['lat', 'lon'])
-
-st.map(map_data)
-
-#  Slider could be cool to use when filtering values
-x = st.slider('x')  # 👈 this is a widget
-st.write(x, 'squared is', x * x)
+# Render the chart in Streamlit
+st.plotly_chart(fig)
