@@ -1,10 +1,11 @@
 version: '2.0'
 
 services:
+    # Streamlit application
     esg-stocks-app:
         build:
             context: .
-            dockerfile: dashboard/Dockerfile_dashboard  # Specify the unique Dockerfile name
+            dockerfile: dashboard/Dockerfile
         ports:
             - 8501:8501
         volumes:
@@ -13,25 +14,44 @@ services:
         environment:
             STREAMLIT_ENV: development
         working_dir: /app
+        networks:
+            - default
         depends_on:
-            esg-stocks-db:
-                condition: service_healthy
+            - esg-stocks-db
+
+    # Still have to figure this one out, otherwise, just manually run python3 or python loader.py to seed the database
+    # Database seeder service
+    # db-seeder:
+    #  build:
+    #     context: .
+    #     dockerfile: data/Dockerfile
+    #  command: python3 loader.py
+    #  volumes:
+    #     - ./data:/app
+    #  networks:
+    #     - default
+    #  depends_on:
+    #     - esg-stocks-db
     
+    # Jupyter notebook
     jupyter:
         build:
             context: .
-            dockerfile: notebook/Dockerfile_notebook
+            dockerfile: notebook/Dockerfile
         ports:
             - 8888:8888
         volumes:
             - ./notebook:/notebook
             - ./data:/data
+        networks:
+            - default
         environment:
             - JUPYTER_ENABLE_LAB=yes
             - NB_USER=team13
             - CHOWN_HOME=yes
         working_dir: /notebook
     
+    # Database
     esg-stocks-db:
         image: postgres:16
         ports:
@@ -43,8 +63,10 @@ services:
         volumes:
             - esg-stocks-db-data:/var/lib/postgresql/data/
         container_name: esg-stocks-db
+        networks:
+            - default
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+            test: ["CMD-SHELL", "pg_isready", "-d", "esg-stocks-database", "-U", "team13"]
             interval: 3s
             timeout: 60s
             retries: 10
@@ -52,3 +74,7 @@ services:
 
 volumes:
     esg-stocks-db-data:
+
+networks:
+  default:
+    driver: bridge
