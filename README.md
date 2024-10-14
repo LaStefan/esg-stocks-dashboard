@@ -41,7 +41,15 @@ Existing Indicators and Visualizations (50-150 words):
 ## Contributing
 ### Git
 
-1. Fork the repository.
+1. Fork the repository
+     ```bash
+    git clone https://github.com/LaStefan/esg-stocks-dashboard.git
+
+- **if you already cloned the repo make sure to do this always before creating a new branch for your work:**
+    ```bash
+    git checkout main
+    git pull
+    
 2. Create a new branch (git checkout -b feature-branch).
     - When you do this step make sure you create branch from "dev" (at the end main/master will be used for final version of the app)
 3. Commit your changes (git commit -m 'Add new feature').
