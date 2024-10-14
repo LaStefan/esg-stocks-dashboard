@@ -63,7 +63,7 @@ Existing Indicators and Visualizations (50-150 words):
 4. Push to the branch (git push origin feature-branch).
 5. Open a pull request.
 
-- In order to update your branch with latest main changes just run **git rebase origin/main**
+- In order to update your branch with latest main changes just run **git fetch && git rebase origin/main**
 
 ### Contributors
 
