@@ -18,17 +18,24 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
 3. **Access the Application:**
     - Streamlit App: Visit http://localhost:8501 in your browser.
     - Jupyter Notebook: Visit http://127.0.0.1:8888/ and follow the instructions in the terminal to access your notebooks.
-  
+
 4. **Relevant links**
    - Links: datasets, video etc.
 
 ## Data Preparation and Collection
-During this process we collected data from various sources such as public APIs and data sets already stored in the CSV files.
+During this process we collected data from various sources such as public APIs and data sets already stored in the CSV files. We used an ETL process for our project in order to do proper data preparation and collection.
+- fetch-data.py script serves the purpose of extracting data from sources and transforming it. After this it saves the data in respective csv files in /transformed folder.
+- loader.py script serves the purpose of loading/seeding the data to our Postgres SQL database. 
+After this we query the data directly from the database in order to visualise it.
 
-**For each significant file/script, mention its purpose. Mention name of each data source, and the file it is saved in.**
 ### Data Sources
 
-
+1. Kaggle ESG ratings: https://www.kaggle.com/datasets/alistairking/public-company-esg-ratings-dataset/data
+    This data source we used for getting ESG ratings for around 700 companies. The file is saved in ./data/raw/esg-ratings.csv
+2. FINNHUB API: https://finnhub.io/
+3. FMP API: https://site.financialmodelingprep.com/
+    For two APIs mentioned above we used these to gather data such as company information and stock pricing history.
+    They are saved in data/transformed/stock.csv and data/transformed/pricing_history.csv
 
 ## Indicators and Visualizations
 Existing Indicators and Visualizations (50-150 words): 
