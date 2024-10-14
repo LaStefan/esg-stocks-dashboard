@@ -57,8 +57,8 @@ Existing Indicators and Visualizations (50-150 words):
     git checkout main
     git pull
 - In order to update your branch with latest main changes just run
- ```bash
-  git fetch && git rebase origin/main
+    ```bash
+     git fetch && git rebase origin/main
 
 2. Create a new branch (git checkout -b feature-branch).
     - When you do this step make sure you create branch from "dev" (at the end main/master will be used for final version of the app)
