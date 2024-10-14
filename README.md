@@ -24,8 +24,8 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
 
 ## Data Preparation and Collection
 During this process we collected data from various sources such as public APIs and data sets already stored in the CSV files. We used an ETL process for our project in order to do proper data preparation and collection.
-- fetch-data.py script serves the purpose of extracting data from sources and transforming it. After this it saves the data in respective csv files in /transformed folder.
-- loader.py script serves the purpose of loading/seeding the data to our Postgres SQL database. 
+- **fetch-data.py** script serves the purpose of extracting data from sources and transforming it. After this it saves the data in respective csv files in /transformed folder.
+- **loader.py** script serves the purpose of loading/seeding the data to our Postgres SQL database. 
 After this we query the data directly from the database in order to visualise it.
 
 ### Data Sources
