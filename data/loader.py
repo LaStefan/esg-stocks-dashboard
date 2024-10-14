@@ -9,7 +9,7 @@ db_config = {
     "dbname": "esg-stocks-database",
     "user": "team13",
     "password": "team13",
-    "host": "localhost",
+    "host": "esg-stocks-db",
     "port": "5432",
 }
 
@@ -48,7 +48,15 @@ def main():
     try:
         
 
-        transformed_data_path = f'{os.getcwd()}/data/transformed/'
+        transformed_data_path = os.path.join(os.path.dirname(__file__), 'transformed')
+        print(f"Attempting to access: {transformed_data_path}")
+
+        if os.path.exists(transformed_data_path):
+            print(f"Contents of {transformed_data_path}: {os.listdir(transformed_data_path)}")
+        else:
+            print(f"Directory does not exist: {transformed_data_path}")
+
+            
         # Get list of CSV files in the current directory
         csv_files = [file for file in os.listdir(transformed_data_path) if file.endswith(".csv")]
 

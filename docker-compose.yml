@@ -21,17 +21,18 @@ services:
 
     # Still have to figure this one out, otherwise, just manually run python3 or python loader.py to seed the database
     # Database seeder service
-    # db-seeder:
-    #  build:
-    #     context: .
-    #     dockerfile: data/Dockerfile
-    #  command: python3 loader.py
-    #  volumes:
-    #     - ./data:/app
-    #  networks:
-    #     - default
-    #  depends_on:
-    #     - esg-stocks-db
+    db-seeder:
+     build:
+        context: .
+        dockerfile: data/Dockerfile
+     command: python3 loader.py
+     volumes:
+        - ./data:/app
+     networks:
+        - default
+     depends_on:
+        esg-stocks-db:
+            condition: service_healthy
     
     # Jupyter notebook
     jupyter:
