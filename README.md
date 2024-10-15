@@ -49,7 +49,13 @@ The price trend over time including a moving average of the close price is gener
 The quarterly average margin trends of the chosen 10 stocks. Based on the daily open en close prices, generated using Python scripts.
 
 ### Analyst recommendations
-The analyst recommendations shows an overview of the recommended action to take from a collection of analysts, per stock. 
+The analyst recommendations shows an overview of the recommended action to take from a collection of analysts, per stock.
+
+### ESG Score Breakdown Across Industries
+The average ESG scores are broken down by industry, providing insights into how different sectors perform in terms of environmental, social, and governance criteria. This was visualized using a Python script after joining the stock and esg_history data through a SQL query.
+
+### ESG Score vs Risk-Adjusted Returns
+This chart compares ESG scores with risk-adjusted returns (Sharpe Ratio) to help investors identify companies that offer strong returns relative to their risk while maintaining high sustainability standards. The data was processed using SQL queries from the stock and esg_history CSVs and analyzed in a Python script.
 
 ### Total ESG scores divided into categories for each stock
 This KPI gives insight in how each stock is performing for each segment of the ESG scale. Which means how sustainable the company is.​ The indicator was computed with two data sources; esg_history.csv and stock information which was gather from the API, SQL query was used to join two tables which were previously loaded into our database. The indicator was initially created in the jupyter notebook (workspace-stefan.ipynb) and then it was beautified with streamlit library in the esg.py script for visualisation in the dashboard app.
