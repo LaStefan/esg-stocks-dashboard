@@ -44,6 +44,13 @@ Existing Indicators and Visualizations (50-150 words):
         Original data source(s) used to create this indicator
         If the indicator is computed using multiple attributes or data sources, explain how is it computed
         Which files in your code (python, html, javascript etc) generates the indicator
+
+# ESG scores by category
+
+# Price trend over time
+The price trend over time is generated using a Python script. The source of this data is from the FMP API.
+
+# other KPI's
         
 ## Contributing
 ### Git
