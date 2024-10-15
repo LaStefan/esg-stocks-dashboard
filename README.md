@@ -54,8 +54,8 @@ The price trend over time including a moving average of the close price is gener
 ### Analyst recommendations
 The analyst recommendations shows an overview of the recommended action to take from a collection of analysts, per stock. 
 
-### other KPI's
-
+### Total ESG scores divided into categories for each stock
+This KPI gives insight in how each stock is performing for each segment of the ESG scale. Which means how sustainable the company is.​ The indicator was computed with two data sources; esg_history.csv and stock information which was gather from the API, SQL query was used to join two tables which were previously loaded into our database. The indicator was initially created in the jupyter notebook (workspace-stefan.ipynb) and then it was beautified with streamlit library in the esg.py script for visualisation in the dashboard app.
 ## Contributing
 ### Git
 
