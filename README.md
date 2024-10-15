@@ -45,7 +45,8 @@ Existing Indicators and Visualizations (50-150 words):
         If the indicator is computed using multiple attributes or data sources, explain how is it computed
         Which files in your code (python, html, javascript etc) generates the indicator
 
-### ESG scores by category
+### ESG scores against Market Capitalization
+The ESG scores are scatter plotted against the companies market capitalization visualized using a python script. It is inner joined with sql queried using the stock and esg_history csv's. 
 
 ### Price trend over time
 The price trend over time including a moving average of the close price is generated using a Python script. The source of this data is from the FMP API.
