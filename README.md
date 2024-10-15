@@ -20,7 +20,7 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
     - Jupyter Notebook: Visit http://127.0.0.1:8888/ and follow the instructions in the terminal to access your notebooks.
 
 4. **Relevant links**
-   - Links: datasets, video etc.
+   - Video link: https://solisservices.sharepoint.com/:v:/s/DataScience-Team13/EQotC56hb5NGvUIe6-ueHWEBPTpcBuwIyeAOB0Ak-uj1Pw?e=DDBQVf 
 
 ## Data Preparation and Collection
 During this process we collected data from various sources such as public APIs and data sets already stored in the CSV files. We used an ETL process for our project in order to do proper data preparation and collection.
@@ -38,12 +38,6 @@ After this we query the data directly from the database in order to visualise it
     They are saved in data/transformed/stock.csv and data/transformed/pricing_history.csv
 
 ## Indicators and Visualizations
-Existing Indicators and Visualizations (50-150 words): 
-    For each indicator/visualization you have implemented so far, 
-        CSF/KPI supported by the indicator
-        Original data source(s) used to create this indicator
-        If the indicator is computed using multiple attributes or data sources, explain how is it computed
-        Which files in your code (python, html, javascript etc) generates the indicator
 
 ### ESG scores against Market Capitalization
 The ESG scores are scatter plotted against the companies market capitalization visualized using a python script. It is inner joined with sql queried using the stock and esg_history csv's. 
