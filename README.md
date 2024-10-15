@@ -51,8 +51,11 @@ The ESG scores are scatter plotted against the companies market capitalization v
 ### Price trend over time
 The price trend over time including a moving average of the close price is generated using a Python script. The source of this data is from the FMP API.
 
+### Analyst recommendations
+The analyst recommendations shows an overview of the recommended action to take from a collection of analysts, per stock. 
+
 ### other KPI's
-        
+
 ## Contributing
 ### Git
 
