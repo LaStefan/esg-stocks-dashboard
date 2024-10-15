@@ -48,7 +48,7 @@ Existing Indicators and Visualizations (50-150 words):
 ### ESG scores by category
 
 ### Price trend over time
-The price trend over time is generated using a Python script. The source of this data is from the FMP API.
+The price trend over time including a moving average of the close price is generated using a Python script. The source of this data is from the FMP API.
 
 ### other KPI's
         
