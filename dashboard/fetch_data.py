@@ -1,7 +1,7 @@
 # This file gathers data from different sources, and generates a CSV file that will be used to seed the database
 from typing import List
 from dotenv import load_dotenv
-from utils import generate_csv, convert_date
+from utils import generate_csv, convert_date, get_ticker_symbols
 import pandas as pd
 import finnhub
 import json
@@ -21,13 +21,7 @@ if not FMP_API_KEY or not FINNHUB_API_KEY:
   raise "The required API keys were not found in the .env file"
 
 # Get the list ticker symbols from the stock_list.json file
-ticker_symbols: List[str]
-try:
-  with open('stock_list.json') as f:
-    ticker_symbols = json.load(f) 
-except Exception as e:
-  raise f"Error reading stock_list.json: {e}"
-
+ticker_symbols: List[str] = get_ticker_symbols()
 # Prepare data sources
 # Finnhub
 finnhub_client = finnhub.Client(FINNHUB_API_KEY)
