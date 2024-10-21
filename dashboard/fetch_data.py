@@ -1,13 +1,14 @@
 # This file gathers data from different sources, and generates a CSV file that will be used to seed the database
 from typing import List
 from dotenv import load_dotenv
-from utils import generate_csv, convert_date, get_ticker_symbols
+from utils import generate_csv, convert_date, get_ticker_symbols, get_chunks
 import pandas as pd
 import finnhub
-import json
+from finnhub.exceptions import FinnhubAPIException
 import asyncio
 import os
 import fmpsdk
+
 load_dotenv()
 
 # Get the path of the current python file
@@ -17,6 +18,7 @@ os.chdir(script_dir)
 
 FMP_API_KEY= os.getenv('FMP_API_KEY')
 FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
+rotation_count = 1
 if not FMP_API_KEY or not FINNHUB_API_KEY:
   raise "The required API keys were not found in the .env file"
 
@@ -28,6 +30,20 @@ finnhub_client = finnhub.Client(FINNHUB_API_KEY)
 
 # ESG data
 esg_dataframe = pd.read_csv('../data/raw/esg-ratings.csv')
+
+# Convert ticker_symbols to a string, so it can be used in the API request
+fmp_company_profile_data = fmpsdk.company_profile(FMP_API_KEY, ','.join(ticker_symbols))
+
+# The FMP historical price data only supports 5 symbols at a time, so the list has to be split into chunks
+fmp_historical_price_data = []
+for chunk in get_chunks(ticker_symbols):
+  symbol_chunk = ','.join(chunk)
+  print("Fetching data for chunk: ", symbol_chunk)
+  try:
+    chunk_data = fmpsdk.historical_price_full(FMP_API_KEY, symbol_chunk, '2023-01-01', '2023-02-31')
+    fmp_historical_price_data = [*fmp_historical_price_data, *chunk_data]
+  except Exception as e:
+    print(f"Error fetching data for {symbol_chunk}: {e}")
 
 # Gets the raw esg row from the csv file, and returns it as a dictionary
 def get_esg_data(ticker_symbol: str):
@@ -42,16 +58,18 @@ def extract_stock_info(ticker_symbol: str):
   company_profile_response = finnhub_client.company_profile2(symbol=ticker_symbol)
   if not company_profile_response: return
   print(f"Fetching stock info from FMP for {ticker_symbol}")
-  # Additional request for getting company description. Commented for now, but we can use it later
-  fmp_company_profile_response = fmpsdk.company_profile(FMP_API_KEY, ticker_symbol)
   
+  fmp_company_profile = next((item for item in fmp_company_profile_data if item["symbol"] == ticker_symbol), None)
+  if not fmp_company_profile: 
+    print("No fmp data for stock ", ticker_symbol + ". Skipping...")
+    return
   return {
     'ticker_symbol': ticker_symbol,
     'name': company_profile_response['name'],
     'industry': company_profile_response['finnhubIndustry'],
     'market_cap': company_profile_response['marketCapitalization'],
     'country': company_profile_response['country'],
-    'description': fmp_company_profile_response[0]['description'],
+    'description': fmp_company_profile['description'],
     'logo': company_profile_response['logo'],
     # Market cap data changes, so added current date to keep track of this
     'updated_at': pd.Timestamp.now()
@@ -61,9 +79,9 @@ def extract_pricing_history(ticker_symbol: str):
   # Get pricing history data
   extracted_pricing_history_list = []
   print(f"Fetching pricing history from FMP for {ticker_symbol}")
-  # TODO: Make the date range bigger
-  daily_price_history = fmpsdk.historical_price_full(FMP_API_KEY, ticker_symbol, '2023-01-01', '2023-02-31')
-  for daily_price in daily_price_history:
+  fmp_pricing_history = next((item for item in fmp_historical_price_data if item["symbol"] == ticker_symbol), None)
+  if not fmp_pricing_history or not fmp_pricing_history['historical']: return
+  for daily_price in fmp_pricing_history["historical"]:
     pricing_history = {
       'ticker_symbol': ticker_symbol,
       'date': daily_price['date'],
@@ -98,37 +116,48 @@ def extract_data():
   stocks_info_list = []
   pricing_history_list = []
   esg_history_list = []
-  
   # Loop through the ticker_symbols and gather the data from the various sources
   for ticker_symbol in ticker_symbols:
-    # Stock table
-    stock_row = extract_stock_info(ticker_symbol)
-    if not stock_row:
-      # If no data is found for the current ticker_symbol, skip to the next ticker_symbol
-      print("No stock data found for ", ticker_symbol)
-      break
-    stocks_info_list.append(stock_row)
-    
-    # Pricing_history table 
-    extracted_pricing_history_list = extract_pricing_history(ticker_symbol)
-    if not extracted_pricing_history_list:
-      print("No pricing history data found for ", ticker_symbol)
-      stocks_info_list.pop()
-      break
-    
-    # ESG_history table
-    esg_row = extract_esg_data(ticker_symbol)
-    if not esg_row:
-      print("No ESG data found for ", ticker_symbol)
-      stocks_info_list.pop()
-      break
-      
-    # Add the extracted_pricing_history_list for the current ticker_symbol to the pricing_history_list. 
-    # This is done in this step, to make sure this list is only added when there is also ESG data for the current ticker_symbol
-    pricing_history_list = [*pricing_history_list, *extracted_pricing_history_list]
-    esg_history_list.append(esg_row)
-    
-    print(f"Extracted data for stock {ticker_symbol}")
+    successful_execution = False
+    # This will make sure no stocks get skipped when rotating API keys
+    while not successful_execution:
+      try:
+        # Stock table
+        stock_row = extract_stock_info(ticker_symbol)
+        if not stock_row:
+          # If no data is found for the current ticker_symbol, skip to the next ticker_symbol
+          print("No stock data found for ", ticker_symbol + ". Skipping...")
+          break
+        stocks_info_list.append(stock_row)
+        # Pricing_history table 
+        extracted_pricing_history_list = extract_pricing_history(ticker_symbol)
+        if not extracted_pricing_history_list:
+          print("No pricing history data found for ", ticker_symbol, ". Skipping...")
+          stocks_info_list.pop()
+          break
+        
+        # ESG_history table
+        esg_row = extract_esg_data(ticker_symbol)
+        if not esg_row:
+          print("No ESG data found for ", ticker_symbol, ". Skipping...")
+          stocks_info_list.pop()
+          break
+          
+        # This is done in this step, to make sure this list is only added when there is also ESG data for the current ticker_symbol
+        pricing_history_list = [*pricing_history_list, *extracted_pricing_history_list]
+        esg_history_list.append(esg_row)
+        
+        print(f"Extracted data for stock {ticker_symbol}")
+        successful_execution = True
+      except FinnhubAPIException as e:
+        print("Finnhub API limit reached, trying different key...")
+        global rotation_count
+        FINNHUB_API_KEY = os.getenv(f'FINNHUB_API_KEY_{rotation_count}')
+        if not FINNHUB_API_KEY:
+          raise RuntimeError("No more FinnHub API keys available, try again later")
+        global finnhub_client
+        finnhub_client =  finnhub.Client(FINNHUB_API_KEY)
+        rotation_count += 1
   return stocks_info_list, pricing_history_list, esg_history_list
   
 async def main():
