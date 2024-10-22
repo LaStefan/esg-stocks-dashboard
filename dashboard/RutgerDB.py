@@ -9,6 +9,7 @@ engine = create_engine("postgresql://team13:team13@esg-stocks-db:5432/esg-stocks
 # Set up Streamlit title and description
 st.title('Quarterly Average Margin by Industry')
 st.write('This dashboard shows the quarterly average margins for each industry.')
+st.write('----------------------------------------------------------------------------------')
 
 # SQL query to join the pricing_history and stock tables
 query = """
