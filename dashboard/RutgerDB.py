@@ -7,7 +7,7 @@ import plotly.express as px
 engine = create_engine("postgresql://team13:team13@esg-stocks-db:5432/esg-stocks-database")
 
 # Set up Streamlit title and description
-st.title('Quarterly Average Margin Dashboard by Industry')
+st.title('Quarterly Average Margin by Industry')
 st.write('This dashboard shows the quarterly average margins for each industry.')
 
 # SQL query to join the pricing_history and stock tables
@@ -37,10 +37,12 @@ quarterly_avg_df = df.groupby(['industry', 'year_quarter'])['margin'].mean().res
 # Convert 'year_quarter' back to a timestamp for easier plotting
 quarterly_avg_df['year_quarter'] = quarterly_avg_df['year_quarter'].dt.to_timestamp()
 
+st.subheader("Select industries to display")
+
 # Create a multi-select dropdown for industry selection
 industries = quarterly_avg_df['industry'].unique()
 selected_industries = st.multiselect(
-    'Select industries to display',
+    '----------------------------------------------------------------------------------',
     options=industries,
     default=industries  # Pre-select all industries by default
 )
