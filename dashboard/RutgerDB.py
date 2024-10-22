@@ -40,13 +40,23 @@ quarterly_avg_df['year_quarter'] = quarterly_avg_df['year_quarter'].dt.to_timest
 
 st.subheader("Select industries to display")
 
+col1, col2= st.columns(2, gap='medium', vertical_alignment='top')
+with col1:
 # Create a multi-select dropdown for industry selection
-industries = quarterly_avg_df['industry'].unique()
-selected_industries = st.multiselect(
-    'Select industries',
-    options=industries,
-    default=industries  # Pre-select all industries by default
-)
+    industries = quarterly_avg_df['industry'].unique()
+    selected_industries = st.multiselect(
+        'Select industries',
+        options=industries,
+        default=industries  # Pre-select all industries by default
+    )
+
+with col2:
+# Add a toggle between line and bar chart
+    chart_type = st.radio(
+        "Choose chart type:",
+        ('Line Chart', 'Bar Chart')
+    )
+
 
 st.write('----------------------------------------------------------------------------------')
 
@@ -57,11 +67,7 @@ else:
     # Show an empty DataFrame if no industries are selected
     filtered_df = pd.DataFrame(columns=quarterly_avg_df.columns)
 
-# Add a toggle between line and bar chart
-chart_type = st.radio(
-    "Choose chart type:",
-    ('Line Chart', 'Bar Chart')
-)
+
 
 # Create the Plotly figure based on the chart type
 if not filtered_df.empty:
