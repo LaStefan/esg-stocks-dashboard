@@ -38,11 +38,11 @@ quarterly_avg_df = df.groupby(['industry', 'year_quarter'])['margin'].mean().res
 # Convert 'year_quarter' back to a timestamp for easier plotting
 quarterly_avg_df['year_quarter'] = quarterly_avg_df['year_quarter'].dt.to_timestamp()
 
-st.subheader("Select industries to display")
+st.subheader("Select graph settings")
 
-col1, col2= st.columns(2, gap='medium', vertical_alignment='top')
+col1, col2 = st.columns([4, 1], gap='medium')
 with col1:
-# Create a multi-select dropdown for industry selection
+    # Create a multi-select dropdown for industry selection
     industries = quarterly_avg_df['industry'].unique()
     selected_industries = st.multiselect(
         'Select industries',
@@ -51,12 +51,11 @@ with col1:
     )
 
 with col2:
-# Add a toggle between line and bar chart
+    # Add a toggle between line and bar chart
     chart_type = st.radio(
         "Choose chart type:",
         ('Line Chart', 'Bar Chart')
     )
-
 
 st.write('----------------------------------------------------------------------------------')
 
@@ -67,7 +66,7 @@ else:
     # Show an empty DataFrame if no industries are selected
     filtered_df = pd.DataFrame(columns=quarterly_avg_df.columns)
 
-
+st.subheader('Quarterly Average Margin by Industry')
 
 # Create the Plotly figure based on the chart type
 if not filtered_df.empty:
@@ -77,7 +76,6 @@ if not filtered_df.empty:
             x='year_quarter',
             y='margin',
             color='industry',
-            title='Quarterly Average Margin by Industry',
             labels={'year_quarter': 'Quarter', 'margin': 'Average Margin (%)'},
             markers=True,
         )
@@ -87,7 +85,6 @@ if not filtered_df.empty:
             x='year_quarter',
             y='margin',
             color='industry',
-            title='Quarterly Average Margin by Industry',
             labels={'year_quarter': 'Quarter', 'margin': 'Average Margin (%)'},
         )
 
@@ -99,11 +96,40 @@ if not filtered_df.empty:
     
     # Show the plot in Streamlit
     st.plotly_chart(fig)
+
+   # Display key metrics below the graph
+st.subheader("Key Insights")
+
+# Calculate key insights
+if not filtered_df.empty:
+    highest_margin_row = filtered_df.loc[filtered_df['margin'].idxmax()]
+    highest_margin_value = highest_margin_row['margin']
+    highest_margin_industry = highest_margin_row['industry']
+    
+    lowest_margin_row = filtered_df.loc[filtered_df['margin'].idxmin()]
+    lowest_margin_value = lowest_margin_row['margin']
+    lowest_margin_industry = lowest_margin_row['industry']
+    
+    overall_avg_margin = filtered_df['margin'].mean()
+    
+    # Create metric columns
+    col1, col2, col3 = st.columns(3)
+    
+    # Display metrics
+    with col1:
+        st.metric(label="Highest Margin (%)", value=f"{highest_margin_value:.2f}%", delta=f"Industry: {highest_margin_industry}")
+    
+    with col2:
+        st.metric(label="Lowest Margin (%)", value=f"{lowest_margin_value:.2f}%", delta=f"Industry: {lowest_margin_industry}", delta_color="inverse")  # Red arrow for lowest margin
+    
+    with col3:
+        st.metric(label="Overall Average Margin (%)", value=f"{overall_avg_margin:.2f}%")
 else:
     st.write("No industries selected. Please select at least one industry to view the graph.")
+    st.subheader("Key Insights")
+    st.write("No data available for metrics.")
 
-# Run this in your terminal to start the Streamlit app
-# streamlit run app.py
+
 
 
 
