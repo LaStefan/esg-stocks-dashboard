@@ -43,7 +43,7 @@ st.subheader("Select industries to display")
 # Create a multi-select dropdown for industry selection
 industries = quarterly_avg_df['industry'].unique()
 selected_industries = st.multiselect(
-    '----------------------------------------------------------------------------------',
+    'Select industries',
     options=industries,
     default=industries  # Pre-select all industries by default
 )
@@ -57,19 +57,35 @@ else:
     # Show an empty DataFrame if no industries are selected
     filtered_df = pd.DataFrame(columns=quarterly_avg_df.columns)
 
-# Create the Plotly figure
-if not filtered_df.empty:
-    fig = px.line(
-        filtered_df,
-        x='year_quarter',
-        y='margin',
-        color='industry',
-        title='Quarterly Average Margin by Industry',
-        labels={'year_quarter': 'Quarter', 'margin': 'Average Margin (%)'},
-        markers=True,
-    )
+# Add a toggle between line and bar chart
+chart_type = st.radio(
+    "Choose chart type:",
+    ('Line Chart', 'Bar Chart')
+)
 
-    # Customize x-axis ticks
+# Create the Plotly figure based on the chart type
+if not filtered_df.empty:
+    if chart_type == 'Line Chart':
+        fig = px.line(
+            filtered_df,
+            x='year_quarter',
+            y='margin',
+            color='industry',
+            title='Quarterly Average Margin by Industry',
+            labels={'year_quarter': 'Quarter', 'margin': 'Average Margin (%)'},
+            markers=True,
+        )
+    else:
+        fig = px.bar(
+            filtered_df,
+            x='year_quarter',
+            y='margin',
+            color='industry',
+            title='Quarterly Average Margin by Industry',
+            labels={'year_quarter': 'Quarter', 'margin': 'Average Margin (%)'},
+        )
+
+    # Customize x-axis ticks to show quarter and year (e.g., Q1 2023)
     fig.update_xaxes(
         tickvals=filtered_df['year_quarter'],
         ticktext=[f'Q{q.quarter} {q.year}' for q in filtered_df['year_quarter']]
