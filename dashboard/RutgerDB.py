@@ -102,20 +102,37 @@ st.subheader("Key Insights")
 
 # Calculate key insights
 if not filtered_df.empty:
+    # Highest and lowest margin industries
     highest_margin_row = filtered_df.loc[filtered_df['margin'].idxmax()]
     highest_margin_value = highest_margin_row['margin']
     highest_margin_industry = highest_margin_row['industry']
-    
+
     lowest_margin_row = filtered_df.loc[filtered_df['margin'].idxmin()]
     lowest_margin_value = lowest_margin_row['margin']
     lowest_margin_industry = lowest_margin_row['industry']
-    
+
     overall_avg_margin = filtered_df['margin'].mean()
-    
+
+    # Calculate industry with the greatest margin increase
+    industry_margin_change = filtered_df.groupby('industry')['margin'].agg(lambda x: x.iloc[-1] - x.iloc[0])
+    max_growth_industry = industry_margin_change.idxmax()
+    max_growth_value = industry_margin_change.max()
+
+    # Industry with largest margin decline
+    min_growth_industry = industry_margin_change.idxmin()
+    min_growth_value = industry_margin_change.min()
+
+    # Calculate volatility (standard deviation of margins)
+    volatility_df = filtered_df.groupby('industry')['margin'].std().reset_index()
+    most_volatile_industry = volatility_df.loc[volatility_df['margin'].idxmax()]['industry']
+    least_volatile_industry = volatility_df.loc[volatility_df['margin'].idxmin()]['industry']
+
+    st.write("----------------------------------------------------------------------------------")
+
     # Create metric columns
     col1, col2, col3 = st.columns(3)
-    
-    # Display metrics
+
+    # Highest and Lowest Margins
     with col1:
         st.metric(label="Highest Margin (%)", value=f"{highest_margin_value:.2f}%", delta=f"Industry: {highest_margin_industry}")
     
@@ -124,10 +141,22 @@ if not filtered_df.empty:
     
     with col3:
         st.metric(label="Overall Average Margin (%)", value=f"{overall_avg_margin:.2f}%")
-else:
-    st.write("No industries selected. Please select at least one industry to view the graph.")
-    st.subheader("Key Insights")
-    st.write("No data available for metrics.")
+        
+
+    st.write("----------------------------------------------------------------------------------")
+    
+
+    # Additional insights
+    col4, col5, col6 = st.columns(3)
+    
+    with col4:
+        st.metric(label="Greatest Margin Increase (%)", value=f"{max_growth_value:.2f}%", delta=f"Industry: {max_growth_industry}")
+    
+    with col5:
+        st.metric(label="Greatest Margin Decline (%)", value=f"{min_growth_value:.2f}%", delta=f"Industry: {min_growth_industry}", delta_color="inverse") # Red arrow for lowest margin
+    
+    with col6:
+        st.metric(label="Most Volatile Industry", value=f"{most_volatile_industry}")
 
 
 
