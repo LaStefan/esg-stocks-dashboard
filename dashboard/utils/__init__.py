@@ -23,7 +23,7 @@ def get_ticker_symbols():
     esg_path = os.path.join(root_dir, 'data', 'raw', 'esg-ratings.csv')
     esg_dataframe = pd.read_csv(esg_path)
     # TODO: Increase number
-    return esg_dataframe['ticker'].str.upper().to_list()[0:200]
+    return esg_dataframe['ticker'].str.upper().to_list()[0:300]
     
   except Exception as e:
     raise f"Error reading esg list: {e}"

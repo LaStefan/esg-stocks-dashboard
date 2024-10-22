@@ -40,16 +40,15 @@ for chunk in get_chunks(ticker_symbols):
   symbol_chunk = ','.join(chunk)
   print("Fetching data for chunk: ", symbol_chunk)
   try:
-    chunk_data = fmpsdk.historical_price_full(FMP_API_KEY, symbol_chunk, '2023-01-01', '2023-02-31')
+    chunk_data = fmpsdk.historical_price_full(FMP_API_KEY, symbol_chunk, '2023-01-01', '2024-01-01')
     fmp_historical_price_data = [*fmp_historical_price_data, *chunk_data]
   except Exception as e:
-    print(f"Error fetching data for {symbol_chunk}: {e}")
+    raise Exception(f"Error fetching FMP data for {symbol_chunk}: {e}")
 
 # Gets the raw esg row from the csv file, and returns it as a dictionary
 def get_esg_data(ticker_symbol: str):
   filtered_df = esg_dataframe[(esg_dataframe['ticker'].str.upper() == ticker_symbol)]
   return filtered_df.to_dict('records')[0] or None
-
 
 # Extraction functions. These functions will be used to extract data from the various sources
 def extract_stock_info(ticker_symbol: str):
@@ -79,6 +78,7 @@ def extract_pricing_history(ticker_symbol: str):
   # Get pricing history data
   extracted_pricing_history_list = []
   print(f"Fetching pricing history from FMP for {ticker_symbol}")
+  # Find the pricing history data for the current ticker_symbol
   fmp_pricing_history = next((item for item in fmp_historical_price_data if item["symbol"] == ticker_symbol), None)
   if not fmp_pricing_history or not fmp_pricing_history['historical']: return
   for daily_price in fmp_pricing_history["historical"]:
