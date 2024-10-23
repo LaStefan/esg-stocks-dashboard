@@ -3,6 +3,8 @@ import pandas as pd
 from sqlalchemy import create_engine
 import plotly.graph_objects as go
 
+from news import render_news_sidebar
+
 st.subheader("Environment, Social, Governance Scores Analysis (ESG)", divider=True)
 
 # Create a SQLAlchemy engine to connect to the PostgreSQL database
@@ -157,3 +159,6 @@ industry_fig.update_layout(
 
 # Render the chart in Streamlit
 st.plotly_chart(industry_fig)
+
+
+render_news_sidebar()

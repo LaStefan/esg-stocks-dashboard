@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
 
+from news import render_news_sidebar
+
 # Streamlit Title
 st.title("Sustainable Investing With ESG")
 
@@ -71,3 +73,5 @@ st.write('----------------------------------------------------------------------
 st.subheader("""
          Here goes the text about Sustainable Investing
          """)
+
+render_news_sidebar()
