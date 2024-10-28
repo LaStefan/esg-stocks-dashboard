@@ -17,6 +17,6 @@ country_converter
 streamlit
 python-dotenv
 fmpsdk
-
+finnhub-python
 # auto-sklearn This package is more challenging to install and has issues
 
