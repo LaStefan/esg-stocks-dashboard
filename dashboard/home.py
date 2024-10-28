@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
 
-from news import render_news_sidebar
-
 # Streamlit Title
 st.title("Sustainable Investing With ESG")
 
@@ -47,7 +45,7 @@ with col1:
              This aspect emphasizes a company's commitment to environmental stewardship, assessing how it utilizes natural resources and its impact on the environment. It primarily addresses issues related to climate change.""")
  
     st.image("assets/environment.jpg", use_column_width='auto')
-    st.subheader(f"Average Score: {avg_env_score}")
+    st.subheader(f"Average Score: {round(avg_env_score, 4)}")
 
 with col2:
     st.subheader(":people_holding_hands: Social (S)")
@@ -55,7 +53,7 @@ with col2:
             This criteria centers on a company’s social responsibility, evaluating how it manages relationships with its employees and the community. It focuses on the social implications of business activities.""")
     
     st.image("assets/society.jpg", use_column_width='auto')
-    st.subheader(f"Average Score: {avg_soc_score}")
+    st.subheader(f"Average Score: {round(avg_soc_score, 4)}")
 
 with col3:
     st.subheader(":classical_building: Governance (G)")
@@ -65,7 +63,7 @@ with col3:
     
     st.image("assets/governance.jpg", use_column_width='auto')
 
-    st.subheader(f"Average Score: {avg_gov_score}")
+    st.subheader(f"Average Score: {round(avg_gov_score, 4)}")
 
 
 st.write('----------------------------------------------------------------------------------')
@@ -73,5 +71,3 @@ st.write('----------------------------------------------------------------------
 st.subheader("""
          Here goes the text about Sustainable Investing
          """)
-
-render_news_sidebar()

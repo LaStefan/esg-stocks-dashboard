@@ -1,5 +1,7 @@
 import streamlit as st
 
+from news import render_news_sidebar
+
 # Define the pages
 pg = st.navigation([
     st.Page("home.py", title="Home", icon="🏡"), 
@@ -12,3 +14,6 @@ st.set_page_config(page_title="ESG Dashboard", page_icon=":bar_chart:", layout='
 
 # Run the page navigation
 pg.run()
+
+# render news sidebar 
+render_news_sidebar()

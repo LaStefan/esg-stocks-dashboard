@@ -3,8 +3,6 @@ import pandas as pd
 from sqlalchemy import create_engine
 import plotly.graph_objects as go
 
-from news import render_news_sidebar
-
 st.subheader("Environment, Social, Governance Scores Analysis (ESG)", divider=True)
 
 # Create a SQLAlchemy engine to connect to the PostgreSQL database
@@ -23,7 +21,6 @@ FROM stock AS st
 INNER JOIN esg_history AS esg ON st.ticker_symbol = esg.ticker_symbol
 INNER JOIN pricing_history AS ph ON ph.ticker_symbol = st.ticker_symbol
 GROUP BY st.ticker_symbol, st.name
-LIMIT 50
 """
 
 # Use pandas to read the data
@@ -107,7 +104,6 @@ CAST(MAX(esg.governance_score) AS numeric) AS max_governance_score
 FROM stock AS st
 INNER JOIN esg_history AS esg ON st.ticker_symbol = esg.ticker_symbol
 GROUP BY st.industry
-LIMIT 10
 """
 
 # Use pandas to read the data
@@ -117,26 +113,40 @@ industry_esg = pd.read_sql_query(query, engine)
 industry_esg_sorted = industry_esg.sort_values(by='max_esg_score', ascending=False)
 max_esg_per_industry = industry_esg_sorted[['max_env_score', 'max_social_score', 'max_governance_score']].max().max()
 
+
+# Select top 7 industries by default
+default_selected_industries = industry_esg_sorted['industry'].head(10).tolist()
+
+# Create checkboxes for industry selection
+selected_industries = st.multiselect(
+    'Select Industries to Display:',
+    industry_esg_sorted['industry'],
+    default=default_selected_industries
+)
+
+# Filter the sorted dataframe based on selected industries
+filtered_esg_sorted = industry_esg_sorted[industry_esg_sorted['industry'].isin(selected_industries)]
+
 # Create a bar chart using Plotly
 industry_fig = go.Figure()
 
 industry_fig.add_trace(go.Bar(
-    x=industry_esg_sorted['industry'],
-    y=industry_esg_sorted['max_env_score'],
+    x=filtered_esg_sorted['industry'],
+    y=filtered_esg_sorted['max_env_score'],
     name='Environment',
     marker_color='lightblue'
 ))
 
 industry_fig.add_trace(go.Bar(
-    x=industry_esg_sorted['industry'],
-    y=industry_esg_sorted['max_social_score'],
+    x=filtered_esg_sorted['industry'],
+    y=filtered_esg_sorted['max_social_score'],
     name='Social',
     marker_color='lightgreen'
 ))
 
 industry_fig.add_trace(go.Bar(
-    x=industry_esg_sorted['industry'],
-    y=industry_esg_sorted['max_governance_score'],
+    x=filtered_esg_sorted['industry'],
+    y=filtered_esg_sorted['max_governance_score'],
     name='Governance',
     marker_color='lightpink'
 ))
@@ -159,6 +169,3 @@ industry_fig.update_layout(
 
 # Render the chart in Streamlit
 st.plotly_chart(industry_fig)
-
-
-render_news_sidebar()
