@@ -8,7 +8,11 @@ pg = st.navigation([
     st.Page("esg.py", title="ESG Scores", icon="📊"),
     st.Page("pricing.py", title="Stocks Analysis", icon="💹"),
     st.Page("pelle.py", title="ESG Scores vs Market Performance", icon="📈"),
-    st.Page("stock_info.py", title="Stock Info", icon="📈")
+    st.Page("stock_info.py", title="Stock Info", icon="📈"),
+    st.Page("history-pricing.py", title="History Pricing", icon="📈"),
+    st.Page("margins.py", title="Margins", icon="📈"),
+    st.Page("jort.py", title="Jort", icon="📈"),
+
 ])
 
 # Set the page configuration (this should be the first Streamlit command)
