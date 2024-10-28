@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from utils import generate_csv, convert_date, get_ticker_symbols
 import pandas as pd
 import finnhub
-import json
 import asyncio
 import os
 import fmpsdk
