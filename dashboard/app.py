@@ -5,12 +5,9 @@ from news import render_news_sidebar
 # Define the pages
 pg = st.navigation([
     st.Page("home.py", title="Home", icon="🏡"), 
-    st.Page("esg.py", title="ESG Scores", icon="📊"),
+    st.Page("esg.py", title="ESG and Market Performance", icon="📊"),
     st.Page("pricing.py", title="Stocks Analysis", icon="💹"),
     st.Page("pelle.py", title="ESG Scores vs Market Performance", icon="📈"),
-    st.Page("stock_info.py", title="Stock Info", icon="📈"),
-    st.Page("history-pricing.py", title="History Pricing", icon="📈"),
-    st.Page("margins.py", title="Margins", icon="📈"),
     st.Page("jort.py", title="Jort", icon="📈"),
 
 ])
