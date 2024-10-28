@@ -19,8 +19,12 @@ def convert_date(input_date):
 def get_ticker_symbols():
   try:
     root_dir = os.path.dirname(os.path.abspath(os.getcwd()))
+    esg_dataframe = pd.read_csv(esg_path)
     ticker_list_path = os.path.join(root_dir, 'dashboard', 'stock_list.json')
     with open(ticker_list_path) as f:
       return json.load(f) 
+    esg_path = os.path.join(root_dir, 'data', 'raw', 'esg-ratings.csv')
+    esg_dataframe = pd.read_csv(esg_path)
+    return esg_dataframe['ticker'].str.upper().to_list()[0:722]
   except Exception as e:
     raise f"Error reading stock_list.json: {e}"
