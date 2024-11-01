@@ -236,9 +236,9 @@ else:
 # Filter the data based on the selected industries
 filtered_df = quarterly_avg_df[quarterly_avg_df['industry'].isin(selected_industries)]
 
-st.write('----------------------------------------------------------------------------------')
+st.write('---')
 
-st.subheader('Quarterly Average Margin by Industry')
+st.subheader('Quarterly Average Margin by Industry', divider=True)
 
 
 
