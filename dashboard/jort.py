@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import numpy as np
 from sqlalchemy import create_engine
 
 # Streamlit title and description
@@ -85,7 +86,7 @@ fig = px.scatter(
     y='sharpe_ratio',
     hover_data={'ticker_symbol': False, 'name': True},  # Hide ticker, show stock name in hover
     labels={'total_esg_score': 'Total ESG Score', 'sharpe_ratio': 'Sharpe Ratio (Risk-Adjusted Return)', 'name': 'Stock Name'},
-    title=f'Risk-Adjusted Returns (Sharpe Ratio) vs ESG Score (Fixed Risk-Free Rate: 2%)',
+    title='Risk-Adjusted Returns (Sharpe Ratio) vs ESG Score (Fixed Risk-Free Rate: 2%)',
     size_max=15  # Maximum bubble size for better visibility
 )
 
