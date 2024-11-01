@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine
 import plotly.express as px
+import numpy as np
 
 # Constants
 DB_CONNECTION_STRING = "postgresql://team13:team13@esg-stocks-db:5432/esg-stocks-database"
@@ -32,10 +33,12 @@ def calculate_annual_returns(df):
     ).reset_index(name='annual_total_return_percentage')
     return df.merge(annual_returns, on=['ticker_symbol', 'year'], how='left')
 
-# Function to create a Plotly scatter plot
+# Function to create a Plotly scatter plot with custom formatted tick labels
 def create_plotly_scatter(df, x_col, y_col, x_label, y_label, title, description):
     st.subheader(title)
     st.markdown(description)
+    
+    # Create the scatter plot
     fig = px.scatter(
         df,
         x=x_col,
@@ -44,17 +47,42 @@ def create_plotly_scatter(df, x_col, y_col, x_label, y_label, title, description
         title=title,
         labels={x_col: x_label, y_col: y_label},
     )
+
+    # Generate custom tick values and labels for the x-axis
+    tick_values = np.linspace(df[x_col].min(), df[x_col].max(), num=6)  # Creates 6 evenly spaced tick values
+    tick_labels = [format_large_number(value) for value in tick_values]  # Use the format_large_number to label the ticks
+
+    # Update layout for the figure
     fig.update_layout(
         xaxis_title=x_label,
         yaxis_title=y_label,
         title=title,
         legend_title="Companies",
         legend=dict(x=1.05, y=1, bordercolor="Black", borderwidth=1),
-        xaxis_tickformat="~s"  # Format large numbers with K, M, B suffixes
+        # Set custom tick labels for the x-axis
+        xaxis=dict(
+            tickvals=tick_values,
+            ticktext=tick_labels
+        )
     )
-    fig.update_traces(marker=dict(size=8, opacity=0.7))  # Customize marker size and opacity for clarity
+
+    # Customize marker size and opacity for clarity
+    fig.update_traces(marker=dict(size=8, opacity=0.7))
+    
+    # Display the figure
     st.plotly_chart(fig)
 
+# Helper function to format and display metric information
+def display_metric(label, value, col):
+    with col:
+        st.metric(label=label, value=value)
+
+# Helper function to display details of a company metric
+def display_company_info(label, company, metric_label, metric_value, col):
+    with col:
+        st.markdown(f"#### {label}")
+        st.write(f"**Company:** {company}")
+        st.write(f"**{metric_label}:** {metric_value}")
 
 # Database connection and data loading
 engine = create_engine(DB_CONNECTION_STRING)
@@ -89,7 +117,6 @@ if df_filtered.empty:
 else:
     # Market Cap Slider Configuration
     min_market_cap, max_market_cap = df_filtered['market_cap'].min(), df_filtered['market_cap'].max()
-
     if min_market_cap == max_market_cap:
         st.info(f"There is only **one company** in the selected industry with a market cap of **{format_large_number(min_market_cap)}**.")
     else:
@@ -136,39 +163,46 @@ else:
 
     # Summary Statistics Section
     if not df_filtered.empty:
-        st.subheader(f"📊 Summary Statistics for {selected_industry} Industry")
+        st.markdown("## 📊 Summary Statistics for Selected Industry")
         st.markdown("""
         Below are key statistics for the selected companies in the chosen industry, providing insights into their average ESG scores, total market cap, and notable highs and lows.
         """)
 
-        # Displaying formatted statistics with icons and colors
-        st.markdown(f"""
-        <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 10px;">
-            <p><strong>📈 Number of Companies:</strong> <span style="color: #4CAF50;">{df_filtered.shape[0]}</span></p>
-            <p><strong>💰 Total Market Cap:</strong> <span style="color: #2196F3;">{format_large_number(df_filtered['market_cap'].sum())}</span></p>
-            <p><strong>📉 Average Market Cap:</strong> <span style="color: #FF5722;">{format_large_number(df_filtered['market_cap'].mean())}</span></p>
-            <p><strong>🌍 Average ESG Score:</strong> <span style="color: #8E44AD;">{df_filtered['total_score'].mean():.2f}</span></p>
-        </div>
-        """, unsafe_allow_html=True)
+        # Ensuring unique companies for correct market cap aggregation
+        df_unique = df_filtered.groupby('name').agg({
+            'market_cap': 'first',  # Take the first market cap value for each company
+            'total_score': 'first'   # Take the first ESG score for each company
+        }).reset_index()
 
-        # Highest and lowest market cap/ESG score companies
-        max_market_cap = df_filtered.loc[df_filtered['market_cap'].idxmax()]
-        min_market_cap = df_filtered.loc[df_filtered['market_cap'].idxmin()]
-        max_esg = df_filtered.loc[df_filtered['total_score'].idxmax()]
-        min_esg = df_filtered.loc[df_filtered['total_score'].idxmin()]
+        # Calculating summary statistics
+        num_companies = df_unique['name'].nunique()
+        total_market_cap = format_large_number(df_unique['market_cap'].sum())
+        avg_market_cap = format_large_number(df_unique['market_cap'].mean())
+        avg_esg_score = df_unique['total_score'].mean()
 
-        st.markdown("""
-        <div style="background-color: #f1f8ff; padding: 15px; border-radius: 5px; margin-top: 10px;">
-            <h4 style="color: #007acc;">Top and Bottom Performers</h4>
-            <p><strong>🏆 Highest Market Cap:</strong> <span style="color: #2E86C1;">{}</span> ({})</p>
-            <p><strong>📉 Lowest Market Cap:</strong> <span style="color: #E74C3C;">{}</span> ({})</p>
-            <p><strong>💼 Highest ESG Score:</strong> <span style="color: #28B463;">{}</span> ({})</p>
-            <p><strong>🔻 Lowest ESG Score:</strong> <span style="color: #D35400;">{}</span> ({})</p>
-        </div>
-        """.format(
-            max_market_cap['name'], format_large_number(max_market_cap['market_cap']),
-            min_market_cap['name'], format_large_number(min_market_cap['market_cap']),
-            max_esg['name'], max_esg['total_score'],
-            min_esg['name'], min_esg['total_score']
-        ), unsafe_allow_html=True)
+        # Getting the highest and lowest metrics
+        max_market_cap = df_unique.loc[df_unique['market_cap'].idxmax()]
+        min_market_cap = df_unique.loc[df_unique['market_cap'].idxmin()]
+        max_esg = df_unique.loc[df_unique['total_score'].idxmax()]
+        min_esg = df_unique.loc[df_unique['total_score'].idxmin()]
 
+        # First Row - High-level Summary Metrics
+        st.markdown("### Key Industry Metrics")
+        col1, col2, col3 = st.columns(3)
+        display_metric("Number of Companies", num_companies, col1)
+        display_metric("Total Market Cap", total_market_cap, col2)
+        display_metric("Average ESG Score", f"{avg_esg_score:.2f}", col3)
+
+        # Market Cap Insights
+        st.markdown("---")
+        st.markdown("### Market Cap Insights")
+        col4, col5 = st.columns(2)
+        display_company_info("🏆 Highest Market Cap", max_market_cap['name'], "Market Cap", format_large_number(max_market_cap['market_cap']), col4)
+        display_company_info("📉 Lowest Market Cap", min_market_cap['name'], "Market Cap", format_large_number(min_market_cap['market_cap']), col5)
+
+        # ESG Score Insights
+        st.markdown("---")
+        st.markdown("### ESG Score Insights")
+        col6, col7 = st.columns(2)
+        display_company_info("🌍 Highest ESG Score", max_esg['name'], "ESG Score", max_esg['total_score'], col6)
+        display_company_info("⚠️ Lowest ESG Score", min_esg['name'], "ESG Score", min_esg['total_score'], col7)

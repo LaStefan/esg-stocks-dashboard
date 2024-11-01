@@ -130,10 +130,21 @@ try:
 
         # Update layout with titles and axis labels
         fig_price_hist.update_layout(title=f"Historic Closing Prices of {name}",
-                          xaxis_title='Date',
-                          yaxis_title='Price ($)',
-                          xaxis_tickformat='%Y-%m-%d',
-                          xaxis_rangeslider_visible=True)
+            xaxis=dict(
+                title='Date',
+                tickformat='%Y-%m-%d',
+                showgrid=True,               # Enable vertical gridlines
+                gridcolor='lightgray',       # Set gridline color
+                gridwidth=1                  # Set gridline width
+            ),
+            yaxis=dict(
+                title='Price ($)',
+                showgrid=True,               # Enable horizontal gridlines if desired
+                gridcolor='lightgray',
+                gridwidth=0.5
+            ),
+            xaxis_rangeslider_visible=True
+        )
 
         # Display plot in Streamlit
         st.plotly_chart(fig_price_hist)
@@ -148,11 +159,6 @@ except FileNotFoundError:
 
 
 # Quarterly Averages
-
-# Create a SQLAlchemy engine to connect to the PostgreSQL database
-# engine = create_engine("postgresql://team13:team13@esg-stocks-db:5432/esg-stocks-database")
-
-# Set up Streamlit title and description
 st.title('Quarterly Average Margin by Industry')
 st.write('This dashboard shows the quarterly average margins for each industry.')
 st.write('----------------------------------------------------------------------------------')
