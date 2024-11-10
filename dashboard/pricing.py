@@ -47,31 +47,54 @@ st.caption(truncate_text(df[df['name'] == selected_stock_name]['description'].va
 
 finnhub_client = finnhub.Client('csbu6j9r01qgt32ev61gcsbu6j9r01qgt32ev620')
 recommendation_response = finnhub_client.recommendation_trends(selected_ticker_symbol)
-data = recommendation_response[0]
-labels = ['Strong Sell', 'Sell', 'Hold', 'Buy', 'Strong Buy']
-values = [data['strongSell'], data['sell'], data['hold'], data['buy'], data['strongBuy']]
-colors = ['#D32F2F', '#F57C00', '#FFC107', '#8BC34A', '#388E3C']
 
-# Create the pie chart
-fig_rec_pie = px.pie(
-    names=labels,
-    values=values,
-    color=labels,
-    color_discrete_map={
-        'Strong Sell': '#D32F2F',  # Strong red
-        'Sell': '#F57C00',         # Orange
-        'Hold': '#FFC107',         # Amber
-        'Buy': '#8BC34A',          # Light green
-        'Strong Buy': '#388E3C'    # Dark green
-    },
-    title="Analyst recommendations",
-    width=1200,
-    height=600
+df = pd.DataFrame(recommendation_response)
+df['period'] = pd.to_datetime(df['period'])
+df['month'] = df['period'].dt.strftime('%B')
+df = df.sort_values(by='period')  
+
+fig = go.Figure()
+
+fig.add_trace(go.Bar(
+    x=df['month'],
+    y=df['strongSell'],
+    name='Strong Sell',
+    marker_color='red'
+))
+fig.add_trace(go.Bar(
+    x=df['month'],
+    y=df['sell'],
+    name='Sell',
+    marker_color='lightcoral'
+))
+fig.add_trace(go.Bar(
+    x=df['month'],
+    y=df['hold'],
+    name='Hold',
+    marker_color='#d1d1d1'
+))
+fig.add_trace(go.Bar(
+    x=df['month'],
+    y=df['buy'],
+    name='Buy',
+    marker_color='#60b360'
+))
+fig.add_trace(go.Bar(
+    x=df['month'],
+    y=df['strongBuy'],
+    name='Strong Buy',
+    marker_color='green'
+))
+
+# Customize layout
+fig.update_layout(
+    title="Analyst Recommendations",
+    xaxis_title="Month",
+    yaxis_title="Number of Recommendations",
+    xaxis=dict(categoryorder='category ascending'),
+    barmode='stack',
 )
-
-# Display the pie chart in the Streamlit app
-st.plotly_chart(fig_rec_pie)
-
+st.plotly_chart(fig)
 
 st.write('---') # PRICING HISTORY OVER YEARS
 
