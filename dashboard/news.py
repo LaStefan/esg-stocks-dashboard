@@ -23,7 +23,7 @@ def render_news_sidebar():
     for index, row in df.iterrows():
         st.sidebar.subheader(row["headline"])
         st.sidebar.markdown(f"Published on: {row['datetime'].strftime('%B %d, %Y %I:%M %p')}")
-        st.sidebar.image(row["image"], use_column_width=True)
+        st.sidebar.image(row["image"], use_container_width=True)
         st.sidebar.markdown(f"{row['summary']}")
         st.sidebar.markdown(f"[🔗 Read more]({row['url']})")
         st.sidebar.markdown("---")

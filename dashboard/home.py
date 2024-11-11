@@ -51,7 +51,7 @@ with col1:
     st.write("""
              This aspect emphasizes a company's commitment to environmental stewardship, assessing how it utilizes natural resources and its impact on the environment. It primarily addresses issues related to climate change.""")
  
-    st.image("assets/environment.jpg", use_column_width='auto')
+    st.image("assets/environment.jpg", use_container_width='auto')
 
 with col2:
     st.subheader(":people_holding_hands: Social (S)")
@@ -65,7 +65,7 @@ with col2:
     st.write("""
             This criteria centers on a company’s social responsibility, evaluating how it manages relationships with its employees and the community. It focuses on the social implications of business activities.""")
     
-    st.image("assets/society.jpg", use_column_width='auto')
+    st.image("assets/society.jpg", use_container_width='auto')
 
 with col3:
     st.subheader(":classical_building: Governance (G)")    
@@ -80,7 +80,7 @@ with col3:
              Governance deals with the integrity of a company’s management structure, examining if leadership operates ethically and responsibly. It is mainly concerned with accountability within leadership.
              """)
 
-    st.image("assets/governance.jpg", use_column_width='auto')
+    st.image("assets/governance.jpg", use_container_width='auto')
 
 
 
