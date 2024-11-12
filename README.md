@@ -24,6 +24,7 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
    - Final presentation video link: https://solisservices.sharepoint.com/:v:/s/DataScience-Team13/EZohZNaiaS1Oqf8V0KSidjQBLDBLhY5_90hJxtzf98QY1A?e=dolszT&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
   
 ## Project Structure
+```
 /project-root
 │
 ├── dashboard/
@@ -42,7 +43,7 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
 ├── README.md
 │
 └── docker-compose.yml
-
+```
 This structure outlines the main directories and files within the project. Each directory contains files relevant to its function as described below:
 
 **dashboard/** : Contains files related to the dashboard interface.
