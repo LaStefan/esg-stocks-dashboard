@@ -20,7 +20,8 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
     - Jupyter Notebook: Visit http://127.0.0.1:8888/ and follow the instructions in the terminal to access your notebooks.
 
 4. **Relevant links**
-   - Video link: https://solisservices.sharepoint.com/:v:/s/DataScience-Team13/EQotC56hb5NGvUIe6-ueHWEBPTpcBuwIyeAOB0Ak-uj1Pw?e=DDBQVf 
+   - Midterm video link: https://solisservices.sharepoint.com/:v:/s/DataScience-Team13/EQotC56hb5NGvUIe6-ueHWEBPTpcBuwIyeAOB0Ak-uj1Pw?e=DDBQVf
+   - Final presentation video link: https://solisservices.sharepoint.com/:v:/s/DataScience-Team13/EZohZNaiaS1Oqf8V0KSidjQBLDBLhY5_90hJxtzf98QY1A?e=dolszT&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
 
 ## Data Preparation and Collection
 During this process we collected data from various sources such as public APIs and data sets already stored in the CSV files. We used an ETL process for our project in order to do proper data preparation and collection.
@@ -37,28 +38,6 @@ After this we query the data directly from the database in order to visualise it
     For two APIs mentioned above we used these to gather data such as company information and stock pricing history.
     They are saved in data/transformed/stock.csv and data/transformed/pricing_history.csv
 
-## Indicators and Visualizations
-
-### ESG scores against Market Capitalization
-The ESG scores are scatter plotted against the companies market capitalization visualized using a python script. It is inner joined with sql queried using the stock and esg_history csv's. 
-
-### Price trend over time
-The price trend over time including a moving average of the close price is generated using a Python script. The source of this data is from the FMP API.
-
-### Quarterly average margin trend
-The quarterly average margin trends of the chosen 10 stocks. Based on the daily open en close prices, generated using Python scripts.
-
-### Analyst recommendations
-The analyst recommendations shows an overview of the recommended action to take from a collection of analysts, per stock.
-
-### ESG Score Breakdown Across Industries
-The average ESG scores are broken down by industry, providing insights into how different sectors perform in terms of environmental, social, and governance criteria. This was visualized using a Python script after joining the stock and esg_history data through a SQL query.
-
-### ESG Score vs Risk-Adjusted Returns
-This chart compares ESG scores with risk-adjusted returns (Sharpe Ratio) to help investors identify companies that offer strong returns relative to their risk while maintaining high sustainability standards. The data was processed using SQL queries from the stock and esg_history CSVs and analyzed in a Python script.
-
-### Total ESG scores divided into categories for each stock
-This KPI gives insight in how each stock is performing for each segment of the ESG scale. Which means how sustainable the company is.​ The indicator was computed with two data sources; esg_history.csv and stock information which was gather from the API, SQL query was used to join two tables which were previously loaded into our database. The indicator was initially created in the jupyter notebook (workspace-stefan.ipynb) and then it was beautified with streamlit library in the esg.py script for visualisation in the dashboard app.
 ## Contributing
 ### Git
 
