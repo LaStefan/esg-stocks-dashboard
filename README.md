@@ -22,6 +22,38 @@ Welcome to the ESG Stocks Application! This is a project related to Data Science
 4. **Relevant links**
    - Midterm video link: https://solisservices.sharepoint.com/:v:/s/DataScience-Team13/EQotC56hb5NGvUIe6-ueHWEBPTpcBuwIyeAOB0Ak-uj1Pw?e=DDBQVf
    - Final presentation video link: https://solisservices.sharepoint.com/:v:/s/DataScience-Team13/EZohZNaiaS1Oqf8V0KSidjQBLDBLhY5_90hJxtzf98QY1A?e=dolszT&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D
+  
+## Project Structure
+/project-root
+│
+├── dashboard/
+│ └── ... # Dashboard related files
+│
+├── data/
+│ └── ... # CSV and data files
+│
+├── notebook/
+│ └── ... # Notebooks and related files
+│
+├── .gitignore
+│
+├── LICENSE
+│
+├── README.md
+│
+└── docker-compose.yml
+
+This structure outlines the main directories and files within the project. Each directory contains files relevant to its function as described below:
+
+**dashboard/** : Contains files related to the dashboard interface.
+**data/** : Stores CSV files and other data sources used in the project.
+**notebook/** : Includes Jupyter notebooks and other documentation or computational work.
+
+Additional files:
+.gitignore : Specifies files to be ignored by Git.
+LICENSE : Contains the licensing information for the project.
+README.md : Provides an overview and detailed information about the project.
+docker-compose.yml : Used for configuring and deploying containers using Docker Compose.
 
 ## Data Preparation and Collection
 During this process we collected data from various sources such as public APIs and data sets already stored in the CSV files. We used an ETL process for our project in order to do proper data preparation and collection.
@@ -37,7 +69,7 @@ After this we query the data directly from the database in order to visualise it
 3. FMP API: https://site.financialmodelingprep.com/
     For two APIs mentioned above we used these to gather data such as company information and stock pricing history.
     They are saved in data/transformed/stock.csv and data/transformed/pricing_history.csv
-
+   
 ## Contributing
 ### Git
 
